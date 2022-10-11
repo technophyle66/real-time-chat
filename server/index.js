@@ -1,4 +1,8 @@
+require('dotenv').config();
+console.log(process.env.HARPERDB_URL);
+
 const express = require('express');
+const harperSaveMessage = require('./services/harper-save-message');
 const app = express();
 http = require('http');
 const cors = require('cors');
@@ -11,6 +15,11 @@ const io = new Server(server, {
     methods: ['GET', 'POST'],
   },
 });
+
+app.get('/client/index.js', (req, res) => {
+  res.send('Hello world');
+});
+
 
 const CHAT_BOT = 'ChatBot';
 io.on('connection', (socket) => {
@@ -33,6 +42,13 @@ io.on('connection', (socket) => {
         chatRoomUsers = allUsers.filter((user) => user.room === room);
         socket.to(room).emit('chatroom_users', chatRoomUsers);
         socket.emit('chatroom_users', chatRoomUsers);
+
+    socket.on('send_message', (data) => {
+      const { message, username, room, __createdtime__ } = data;
+      io.in(room).emit('receive_message', data); // Send to all users in room, including sender
+      harperSaveMessage(message, username, room, __createdtime__) // Save message in db
+        .then((response) => console.log(response))
+        .catch((err) => console.log(err));})
   });
 });
 
