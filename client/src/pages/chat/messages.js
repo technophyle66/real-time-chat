@@ -1,43 +1,51 @@
-// client/src/App.js
+// client/src/pages/chat/messages.js
 
-import './App.css';
-import { useState } from 'react';
-import Home from './pages/home';
-import Chat from './pages/chat';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import io from 'socket.io-client';
+import styles from './styles.module.css';
+import { useState, useEffect } from 'react';
 
-const socket = io.connect('http://localhost:4000');
+const Messages = ({ socket }) => {
+  const [messagesRecieved, setMessagesReceived] = useState([]);
 
-function App() {
-  const [username, setUsername] = useState('');
-  const [room, setRoom] = useState('');
+  // Runs whenever a socket event is recieved from the server
+  useEffect(() => {
+    socket.on('receive_message', (data) => {
+      console.log(data);
+      setMessagesReceived((state) => [
+        ...state,
+        {
+          message: data.message,
+          username: data.username,
+          __createdtime__: data.__createdtime__,
+        },
+      ]);
+    });
+
+	// Remove event listener on component unmount
+    return () => socket.off('receive_message');
+  }, [socket]);
+
+  // dd/mm/yyyy, hh:mm:ss
+  function formatDateFromTimestamp(timestamp) {
+    const date = new Date(timestamp);
+    return date.toLocaleString();
+  }
 
   return (
-    <Router>
-      <div className='App'>
-        <Routes>
-          <Route
-            path='/'
-            element={
-              <Home
-                username={username}
-                setUsername={setUsername}
-                room={room}
-                setRoom={setRoom}
-                socket={socket}
-              />
-            }
-          />
-          {/* Add this */}
-          <Route
-            path='/chat'
-            element={<Chat username={username} room={room} socket={socket} />}
-          />
-        </Routes>
-      </div>
-    </Router>
+    <div className={styles.messagesColumn}>
+      {messagesRecieved.map((msg, i) => (
+        <div className={styles.message} key={i}>
+          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+            <span className={styles.msgMeta}>{msg.username}</span>
+            <span className={styles.msgMeta}>
+              {formatDateFromTimestamp(msg.__createdtime__)}
+            </span>
+          </div>
+          <p className={styles.msgText}>{msg.message}</p>
+          <br />
+        </div>
+      ))}
+    </div>
   );
-}
+};
 
-export default App;
+export default Messages;
