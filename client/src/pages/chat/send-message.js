@@ -1,5 +1,3 @@
-// client/src/pages/chat/send-message.js
-
 import styles from './styles.module.css';
 import React, { useState } from 'react';
 
