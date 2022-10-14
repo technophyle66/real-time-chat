@@ -8,7 +8,20 @@ In the project directory, you can run:
 
 ### `cd client` or `cd server`
 ### `npm install`
+
+## For Client Directory
+
 ### `npm start`
+
+## For Server Directory
+
+### `npm run dev`
+
+## If you need HarperDB Functionality to Store Messages
+
+Create a harper db table + schema in your table and then in `server/.env`
+### `HARPERDB_URL="<your HarperDB url"`
+### `HARPERDB_PW="Basic <your HarperDB password key>"`
 
 Runs the app in the development mode.\
 Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
