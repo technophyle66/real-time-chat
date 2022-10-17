@@ -19,9 +19,13 @@ In the project directory, you can run:
 
 ## If you need HarperDB Functionality to Store Messages
 
-Create a harper db table + schema in your table and then in `server/.env`
-### `HARPERDB_URL="<your HarperDB url"`
-### `HARPERDB_PW="Basic <your HarperDB password key>"`
+Create a harper db table + schema in your table and then
+Rename `server/.env.example` to `server/.env`
+
+### `HARPERDB_URL="<harperDbCloudURL"`
+Replace "harperDbCloudURL" with your hyper DB cloud URL.
+### `HARPERDB_PW="hyperDbPassword"`
+Replace "hyperDbPassword" with your super secret HyperDB password.
 
 Runs the app in the development mode.\
 Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
